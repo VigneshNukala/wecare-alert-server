@@ -7,6 +7,6 @@ motor
 pymongo
 resend
 joblib
-sklearn
 pydantic
 pandas
+scikit-learn
