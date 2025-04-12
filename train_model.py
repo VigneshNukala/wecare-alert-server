@@ -1,7 +1,7 @@
 import pandas as pd
 from sklearn.model_selection import train_test_split # type: ignore
 from sklearn.ensemble import RandomForestClassifier # type: ignore
-import joblib # type: ignore
+import joblib
 
 # Step 1: Load Data
 df = pd.read_csv("patient_data.csv")

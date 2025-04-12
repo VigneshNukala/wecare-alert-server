@@ -171,19 +171,22 @@ async def predict(report: PatientReport, token: str = Depends(get_token)):
         patient_email_result = await send_alert_email(patient_details)
 
         emergency_notifications = []
+        eme = patient_profile.get("emergencyContacts", [])
+        print("Emergency Contacts:", eme)
         for contact in patient_profile.get("emergencyContacts", []):
-            emergency_details = {
-                "emergency_contact_name": contact["name"],
-                "email": contact["email"],
-                "patient_name": patient_profile["name"],
-                "temperature": report.temperature,
-                "spo2": report.spo2,
-                "heart_rate": report.heart_rate
-            }
-            emergency_result = await send_alert_email(emergency_details, is_emergency_contact=True)
-            emergency_notifications.append(emergency_result)
-        print(emergency_notifications)
-        print(patient_profile.get("emergencyContacts", []))
+            if "name" in contact and "email" in contact:
+                emergency_details = {
+                    "emergency_contact_name": contact["name"],
+                    "email": contact["email"],
+                    "patient_name": patient_profile["name"],
+                    "temperature": report.temperature,
+                    "spo2": report.spo2,
+                    "heart_rate": report.heart_rate,
+                }
+                emergency_result = await send_alert_email(emergency_details, is_emergency_contact=True)
+                emergency_notifications.append(emergency_result)
+            else:
+                print("⚠️ Skipping emergency contact due to missing fields:", contact)
         return {
             "status": "received",
             "is_abnormal": is_abnormal,
